@@ -1,13 +1,17 @@
+// ignore_for_file: unused_import, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, library_private_types_in_public_api
+
 import 'package:stepout_customer_support/trade_in_notifier.dart';
 import 'package:stepout_customer_support/utility/color.dart';
 import 'package:stepout_customer_support/utility/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:stepout_customer_support/utils/CustomTextStyle.dart';
-import 'package:stepout_customer_support/utils/CustomUtils.dart';
+import 'package:stepout_customer_support/utility/CustomTextStyle.dart';
+import 'package:stepout_customer_support/utility/CustomUtils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class NewTradeInPage extends StatefulWidget {
+  const NewTradeInPage({super.key});
+
   @override
   _NewTradeInPageState createState() => _NewTradeInPageState();
 }
@@ -67,7 +71,7 @@ class _NewTradeInPageState extends State<NewTradeInPage> {
                               .tradeInProductsList
                               .map(
                                 (e) => DropdownMenuItem(
-                                    child: Text(e.name), value: e.name),
+                                    value: e.name, child: Text(e.name)),
                               )
                               .toList(),
                           hint: const Text("Product"),
@@ -97,7 +101,7 @@ class _NewTradeInPageState extends State<NewTradeInPage> {
                           items: ['Perfect', 'Medium', 'Damaged']
                               .map(
                                 (e) =>
-                                    DropdownMenuItem(child: Text(e), value: e),
+                                    DropdownMenuItem(value: e, child: Text(e)),
                               )
                               .toList(),
                           hint: const Text("Product Condition"),
@@ -206,6 +210,7 @@ class _NewTradeInPageState extends State<NewTradeInPage> {
 
   footer(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -289,19 +294,18 @@ class _NewTradeInPageState extends State<NewTradeInPage> {
           Utils.getSizedBox(height: 8),
         ],
       ),
-      margin: const EdgeInsets.only(top: 16),
     );
   }
 
   createHeader() {
     return Container(
       alignment: Alignment.topLeft,
+      margin: const EdgeInsets.only(left: 12, top: 12),
       child: Text(
         "Trade-In",
         style: CustomTextStyle.textFormFieldBold
             .copyWith(fontSize: 16, color: Colors.black),
       ),
-      margin: const EdgeInsets.only(left: 12, top: 12),
     );
   }
 

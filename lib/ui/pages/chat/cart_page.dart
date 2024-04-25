@@ -1,12 +1,16 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, library_private_types_in_public_api
+
 import 'package:stepout_customer_support/cart_notifier.dart';
 import 'package:stepout_customer_support/utility/color.dart';
 import 'package:flutter/material.dart';
-import 'package:stepout_customer_support/utils/CustomTextStyle.dart';
-import 'package:stepout_customer_support/utils/CustomUtils.dart';
+import 'package:stepout_customer_support/utility/CustomTextStyle.dart';
+import 'package:stepout_customer_support/utility/CustomUtils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
+  const CartPage({super.key});
+
   @override
   _CartPageState createState() => _CartPageState();
 }
@@ -52,6 +56,7 @@ class _CartPageState extends State<CartPage> {
 
   footer(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -60,7 +65,7 @@ class _CartPageState extends State<CartPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(left: 30),
+                margin: const EdgeInsets.only(left: 30),
                 child: Text(
                   "Total",
                   style: CustomTextStyle.textFormFieldMedium
@@ -68,11 +73,11 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 30),
+                margin: const EdgeInsets.only(right: 30),
                 child: Text(
                   "B ${context.watch<CartNotifier>().products.isEmpty ? '0.00' : context.watch<CartNotifier>().products.first.getTotalPrice().toString()}",
                   style: CustomTextStyle.textFormFieldBlack
-                      .copyWith(color: Color(0xFF2F2F87), fontSize: 14),
+                      .copyWith(color: const Color(0xFF2F2F87), fontSize: 14),
                 ),
               ),
             ],
@@ -109,31 +114,30 @@ class _CartPageState extends State<CartPage> {
           Utils.getSizedBox(height: 8),
         ],
       ),
-      margin: EdgeInsets.only(top: 16),
     );
   }
 
   createHeader() {
     return Container(
       alignment: Alignment.topLeft,
+      margin: const EdgeInsets.only(left: 12, top: 12),
       child: Text(
         "SHOPPING CART",
         style: CustomTextStyle.textFormFieldBold
             .copyWith(fontSize: 16, color: Colors.black),
       ),
-      margin: EdgeInsets.only(left: 12, top: 12),
     );
   }
 
   createSubTitle(BuildContext context) {
     return Container(
       alignment: Alignment.topLeft,
+      margin: const EdgeInsets.only(left: 12, top: 4),
       child: Text(
         "Total ${context.read<CartNotifier>().products.length} Items",
         style: CustomTextStyle.textFormFieldBold
             .copyWith(fontSize: 12, color: Colors.grey),
       ),
-      margin: EdgeInsets.only(left: 12, top: 4),
     );
   }
 
@@ -153,17 +157,18 @@ class _CartPageState extends State<CartPage> {
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-          decoration: BoxDecoration(
+          margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
+          decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(16))),
           child: Row(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
+                margin:
+                    const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
                 width: 80,
                 height: 80,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(14)),
                   // color: Color(0xFF2F2F87).shade200,
                   image: DecorationImage(
@@ -173,6 +178,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               Expanded(
+                flex: 100,
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -180,7 +186,7 @@ class _CartPageState extends State<CartPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.only(right: 8, top: 4),
+                        padding: const EdgeInsets.only(right: 8, top: 4),
                         child: Text(
                           p.name,
                           maxLines: 2,
@@ -200,67 +206,64 @@ class _CartPageState extends State<CartPage> {
                         style: CustomTextStyle.textFormFieldRegular
                             .copyWith(color: Colors.grey, fontSize: 14),
                       ),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "B ${p.price}",
-                              style: CustomTextStyle.textFormFieldBlack
-                                  .copyWith(color: Color(0xFF2F2F87)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            "B ${p.price}",
+                            style: CustomTextStyle.textFormFieldBlack
+                                .copyWith(color: const Color(0xFF2F2F87)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () {
+                                    p.decrementQuantity();
+                                    context
+                                        .read<CartNotifier>()
+                                        .notifyListeners();
+                                  },
+                                  child: Icon(
+                                    Icons.remove,
+                                    size: 24,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                                Container(
+                                  color: Colors.grey.shade200,
+                                  padding: const EdgeInsets.only(
+                                      bottom: 2, right: 12, left: 12),
+                                  child: Text(
+                                    p.quantity.toString(),
+                                    style:
+                                        CustomTextStyle.textFormFieldSemiBold,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    p.incrementQuantity();
+                                    context
+                                        .read<CartNotifier>()
+                                        .notifyListeners();
+                                  },
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 24,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                )
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {
-                                      p.decrementQuantity();
-                                      context
-                                          .read<CartNotifier>()
-                                          .notifyListeners();
-                                    },
-                                    child: Icon(
-                                      Icons.remove,
-                                      size: 24,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Colors.grey.shade200,
-                                    padding: const EdgeInsets.only(
-                                        bottom: 2, right: 12, left: 12),
-                                    child: Text(
-                                      p.quantity.toString(),
-                                      style:
-                                          CustomTextStyle.textFormFieldSemiBold,
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      p.incrementQuantity();
-                                      context
-                                          .read<CartNotifier>()
-                                          .notifyListeners();
-                                    },
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 24,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     ],
                   ),
                 ),
-                flex: 100,
               )
             ],
           ),
@@ -271,21 +274,21 @@ class _CartPageState extends State<CartPage> {
             width: 24,
             height: 24,
             alignment: Alignment.center,
-            margin: EdgeInsets.only(right: 10, top: 8),
+            margin: const EdgeInsets.only(right: 10, top: 8),
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                color: Color(0xFF2F2F87)),
             child: GestureDetector(
               onTap: () {
                 context.read<CartNotifier>().products.removeLast();
                 context.read<CartNotifier>().notifyListeners();
               },
-              child: Icon(
+              child: const Icon(
                 Icons.close,
                 color: Colors.white,
                 size: 20,
               ),
             ),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-                color: Color(0xFF2F2F87)),
           ),
         )
       ],

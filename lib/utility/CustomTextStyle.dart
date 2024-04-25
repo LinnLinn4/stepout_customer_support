@@ -1,7 +1,9 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 class CustomTextStyle {
-  static var textFormFieldRegular = TextStyle(
+  static var textFormFieldRegular = const TextStyle(
       fontSize: 16,
       fontFamily: "Helvetica",
       color: Colors.black,

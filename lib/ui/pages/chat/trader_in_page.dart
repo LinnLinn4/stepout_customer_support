@@ -1,10 +1,12 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:stepout_customer_support/cart_notifier.dart';
 import 'package:stepout_customer_support/trade_in_notifier.dart';
 import 'package:stepout_customer_support/utility/color.dart';
 import 'package:stepout_customer_support/utility/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:stepout_customer_support/utils/CustomTextStyle.dart';
-import 'package:stepout_customer_support/utils/CustomUtils.dart';
+import 'package:stepout_customer_support/utility/CustomTextStyle.dart';
+import 'package:stepout_customer_support/utility/CustomUtils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 

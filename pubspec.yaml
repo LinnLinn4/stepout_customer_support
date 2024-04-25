@@ -44,7 +44,6 @@ dependencies:
   provider: ^6.1.1
   path_provider: ^2.1.1
   google_speech: ^4.3.0
-  chat_gpt_sdk: ^2.2.5
   http: ^1.1.0
   scroll_to_index: ^3.0.1
   record: ^5.0.4

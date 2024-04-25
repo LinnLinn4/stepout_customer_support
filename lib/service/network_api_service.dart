@@ -12,11 +12,9 @@ class NetworkAPI {
     try {
       final request = http.MultipartRequest(
           'POST', Uri.parse("https://api.openai.com/v1/audio/transcriptions"));
-      request.fields.addAll({
-        "model": "whisper-1",
-      });
+      request.fields['model'] = "whisper-1";
       request.files.add(http.MultipartFile.fromBytes(
-        'audioFile',
+        'file',
         file,
         filename: "audio.wav",
       ));
@@ -27,11 +25,7 @@ class NetworkAPI {
       final p = (await request.send());
       final t = await p.stream.bytesToString();
       final response = jsonDecode(t);
-      if (response['success'] == true) {
-        return response;
-      } else {
-        throw Exception('Fail to send request');
-      }
+      return response;
     } catch (e) {
       rethrow;
     }

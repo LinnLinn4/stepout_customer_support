@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, constant_identifier_names
+// ignore_for_file: depend_on_referenced_packages, constant_identifier_names, use_build_context_synchronously
 import 'dart:developer' as dev;
 import 'package:stepout_customer_support/service/audio_player_service.dart';
 import 'package:stepout_customer_support/service/network_api_service.dart';
@@ -222,7 +222,7 @@ class ChatViewModel extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print((e as GeminiException).message.toString());
+      dev.log((e as GeminiException).message.toString());
       isAIProcessing = false;
       notifyListeners();
     }

@@ -9,23 +9,22 @@ import 'package:flutter/material.dart';
 class RouteGenerator {
   static final navigatorKey = GlobalKey<NavigatorState>();
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
     switch (settings.name) {
       case ChatPage.route:
         return MaterialPageRoute(
             builder: (_) => const ChatPage(), settings: settings);
       case "trade-in":
         return MaterialPageRoute(
-            builder: (_) => TradeInPage(), settings: settings);
+            builder: (_) => const TradeInPage(), settings: settings);
       case "cart":
         return MaterialPageRoute(
-            builder: (_) => CartPage(), settings: settings);
+            builder: (_) => const CartPage(), settings: settings);
       case "new-trade-in":
         return MaterialPageRoute(
-            builder: (_) => NewTradeInPage(), settings: settings);
+            builder: (_) => const NewTradeInPage(), settings: settings);
       case "coupon":
         return MaterialPageRoute(
-            builder: (_) => CouponPage(), settings: settings);
+            builder: (_) => const CouponPage(), settings: settings);
 
       default:
         return _errorRoute();
