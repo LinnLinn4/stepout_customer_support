@@ -42,7 +42,25 @@ class ChatViewModel extends ChangeNotifier {
         name: "Nike Dunk Low",
         price: 5000,
         description:
-            "Enjoy a calm and comfortable experience wherever you go on holiday.")
+            "An '80s basketball icon made for hardwood courts."),
+    Product(
+        id: 2,
+        name: "Nike Calm",
+        price: 2000,
+        description:
+        "Enjoy a calm and comfortable experience wherever you go on holiday."),
+    Product(
+        id: 3,
+        name: "Nike Court Vision Low Next Nature",
+        price: 3000,
+        description:
+        "If you love the classic look of '80s basketball, this shoe is perfect."),
+    Product(
+        id: 4,
+        name: "Nike Air Force 1 '07",
+        price: 5200,
+        description:
+        "Comfortable, durable and timeless - that's why they're the #1 go-to item."),
   ];
   void init(BuildContext context) async {
     try {
@@ -172,9 +190,20 @@ class ChatViewModel extends ChangeNotifier {
                    Your name is Brian.
                     We have the following products ${productsList.map((e) => "${e.name} which is ${e.price} Baht, ")} and
                     Only recommend the products we have when i asked for recommendations. 
+                    Try to recommend our shoes according to the customers' requirements if provided.
                     we have trade-in program. 
                     If they ask for trade-in program, you can say click to below button to go to trade-in page.
+                    If they ask for the store's address, here is the address "330/1 Soi Latphrao 132 Latphrao Road Klongchan, Bangkapi, Bangkok, 10240, Thailand, Phone number:  +66662 3744119".
                     Never Include additional information except for the informations asked""")
+        ], role: 'user'),
+        Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
+        Content(parts: [
+          Parts(text:
+          """If they asked about warranty and after-sales support, you can answer like this.
+          Nike offers a two-year warranty on all of its shoes. This warranty covers any defects in materials or workmanship. 
+          If you have any problems with your shoes within the first year, you can contact us to return the item.
+          We also offer a variety of after-sales support services, including: Free shipping on all orders over 5,000 Baht 
+          A 60-day return policy and A dedicated customer service team that is available to answer any questions you may have""")
         ], role: 'user'),
         Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
         ...messagesList.whereType<types.TextMessage>().map((e) {
