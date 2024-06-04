@@ -482,7 +482,7 @@ class _ChatPageState extends State<ChatPage> {
                         name: "Nike Dunk Low",
                         price: 5000,
                         description:
-                            "Enjoy a calm and comfortable experience wherever you go on holiday."));
+                            "An '80s basketball icon made for hardwood courts."));
                   }
                 },
                 child: Container(
