@@ -1,2 +1,2 @@
-const geminiAPIKey = "AIzaSyAJrfe264OVSp6z4vzNY5iQAq3n_9H7tSU";
+const geminiAPIKey = "";
 const openAIToken = "API_KEY";
