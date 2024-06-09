@@ -206,9 +206,9 @@ class _ChatPageState extends State<ChatPage> {
                                     )),
                                 onPressed: () {
                                   chatViewModel
-                                      .sendMessage("Recommend me  a shoe.");
+                                      .sendMessage("Recommend me a shoe.");
                                 },
-                                child: const Text("Recommend me  a shoe.")),
+                                child: const Text("Recommend me a shoe.")),
                           ),
                         ),
                         const SizedBox(
