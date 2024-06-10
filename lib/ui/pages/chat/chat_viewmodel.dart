@@ -41,26 +41,25 @@ class ChatViewModel extends ChangeNotifier {
         id: 1,
         name: "Nike Dunk Low",
         price: 5000,
-        description:
-            "An '80s basketball icon made for hardwood courts."),
+        description: "An '80s basketball icon made for hardwood courts."),
     Product(
         id: 2,
         name: "Nike Calm",
         price: 2000,
         description:
-        "Enjoy a calm and comfortable experience wherever you go on holiday."),
+            "Enjoy a calm and comfortable experience wherever you go on holiday."),
     Product(
         id: 3,
         name: "Nike Court Vision Low Next Nature",
         price: 3000,
         description:
-        "If you love the classic look of '80s basketball, this shoe is perfect."),
+            "If you love the classic look of '80s basketball, this shoe is perfect."),
     Product(
         id: 4,
         name: "Nike Air Force 1 '07",
         price: 5200,
         description:
-        "Comfortable, durable and timeless - that's why they're the #1 go-to item."),
+            "Comfortable, durable and timeless - that's why they're the #1 go-to item."),
   ];
   void init(BuildContext context) async {
     try {
@@ -154,7 +153,7 @@ class ChatViewModel extends ChangeNotifier {
       path = await record.stop() ?? '';
       final file = await _getAudioContent();
       final response = await speechToText.recognize(file);
-      if (!response.isSuccess) {
+      if (!response.isSuccess || response.text.isEmpty) {
         return;
       }
       addMessage(
@@ -198,8 +197,9 @@ class ChatViewModel extends ChangeNotifier {
         ], role: 'user'),
         Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
         Content(parts: [
-          Parts(text:
-          """If they asked about warranty and after-sales support, you can answer like this.
+          Parts(
+              text:
+                  """If they asked about warranty and after-sales support, you can answer like this.
           Nike offers a two-year warranty on all of its shoes. This warranty covers any defects in materials or workmanship. 
           If you have any problems with your shoes within the first year, you can contact us to return the item.
           We also offer a variety of after-sales support services, including: Free shipping on all orders over 5,000 Baht 

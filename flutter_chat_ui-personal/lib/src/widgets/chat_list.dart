@@ -83,8 +83,8 @@ class _ChatListState extends State<ChatList>
 
   bool _indicatorOnScrollStatus = false;
   bool _isNextPageLoading = false;
-  final GlobalKey<SliverAnimatedListState> _listKey =
-      GlobalKey<SliverAnimatedListState>();
+  // final GlobalKey<SliverAnimatedListState> _listKey =
+  //     GlobalKey<SliverAnimatedListState>();
   late List<Object> _oldData = List.from(widget.items);
 
   @override
@@ -113,14 +113,14 @@ class _ChatListState extends State<ChatList>
     for (final update in diffResult.getUpdates(batch: false)) {
       update.when(
         insert: (pos, count) {
-          _listKey.currentState?.insertItem(pos);
+          // _listKey.currentState?.insertItem(pos);
         },
         remove: (pos, count) {
-          final item = oldList[pos];
-          _listKey.currentState?.removeItem(
-            pos,
-            (_, animation) => _removedMessageBuilder(item, animation),
-          );
+          // final item = oldList[pos];
+          // _listKey.currentState?.removeItem(
+          //   pos,
+          //   (_, animation) => _removedMessageBuilder(item, animation),
+          // );
         },
         change: (pos, payload) {},
         move: (from, to) {},
@@ -175,15 +175,15 @@ class _ChatListState extends State<ChatList>
           if (message.author.id == InheritedUser.of(context).user.id) {
             // Delay to give some time for Flutter to calculate new
             // size after new message was added.
-            Future.delayed(const Duration(milliseconds: 100), () {
-              if (widget.scrollController.hasClients) {
-                widget.scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInQuad,
-                );
-              }
-            });
+            // Future.delayed(const Duration(milliseconds: 100), () {
+            //   if (widget.scrollController.hasClients) {
+            //     widget.scrollController.animateTo(
+            //       0,
+            //       duration: const Duration(milliseconds: 200),
+            //       curve: Curves.easeInQuad,
+            //     );
+            //   }
+            // });
           }
         }
       }
@@ -260,87 +260,97 @@ class _ChatListState extends State<ChatList>
 
           return false;
         },
-        child: CustomScrollView(
-          controller: widget.scrollController,
+        child: ListView.builder(
           keyboardDismissBehavior: widget.keyboardDismissBehavior,
           physics: widget.scrollPhysics,
-          reverse: false,
-          slivers: [
-            if (widget.bottomWidget != null)
-              SliverToBoxAdapter(child: widget.bottomWidget),
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 4),
-              sliver: SliverToBoxAdapter(
-                child: (widget.typingIndicatorOptions!.typingUsers.isNotEmpty &&
-                        !_indicatorOnScrollStatus)
-                    ? widget.typingIndicatorOptions?.customTypingIndicator ??
-                        TypingIndicator(
-                          bubbleAlignment: widget.bubbleRtlAlignment,
-                          options: widget.typingIndicatorOptions!,
-                          showIndicator: (widget.typingIndicatorOptions!
-                                  .typingUsers.isNotEmpty &&
-                              !_indicatorOnScrollStatus),
-                        )
-                    : const SizedBox.shrink(),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 4),
-              sliver: SliverAnimatedList(
-                findChildIndexCallback: (Key key) {
-                  if (key is ValueKey<Object>) {
-                    final newIndex = widget.items.indexWhere(
-                      (v) => _valueKeyForItem(v) == key,
-                    );
-                    if (newIndex != -1) {
-                      return newIndex;
-                    }
-                  }
-                  return null;
-                },
-                initialItemCount: widget.items.length,
-                key: _listKey,
-                itemBuilder: (_, index, animation) =>
-                    _newMessageBuilder(index, animation),
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.only(
-                top: 16 +
-                    (widget.useTopSafeAreaInset
-                        ? MediaQuery.of(context).padding.top
-                        : 0),
-              ),
-              sliver: SliverToBoxAdapter(
-                child: SizeTransition(
-                  axisAlignment: 1,
-                  sizeFactor: _animation,
-                  child: Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 32,
-                      width: 32,
-                      child: SizedBox(
-                        height: 16,
-                        width: 16,
-                        child: _isNextPageLoading
-                            ? CircularProgressIndicator(
-                                backgroundColor: Colors.transparent,
-                                strokeWidth: 1.5,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  InheritedChatTheme.of(context)
-                                      .theme
-                                      .primaryColor,
-                                ),
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          controller: widget.scrollController,
+          itemBuilder: (context, index) =>
+              widget.itemBuilder(widget.items.elementAt(index), index),
+          itemCount: widget.items.length,
         ),
+        // child: CustomScrollView(
+        //   keyboardDismissBehavior: widget.keyboardDismissBehavior,
+        //   physics: widget.scrollPhysics,
+        //   reverse: false,
+        //   slivers: [
+        //     if (widget.bottomWidget != null)
+        //       SliverToBoxAdapter(child: widget.bottomWidget),
+        //     SliverPadding(
+        //       padding: const EdgeInsets.only(bottom: 4),
+        //       sliver: SliverToBoxAdapter(
+        //         child: (widget.typingIndicatorOptions!.typingUsers.isNotEmpty &&
+        //                 !_indicatorOnScrollStatus)
+        //             ? widget.typingIndicatorOptions?.customTypingIndicator ??
+        //                 TypingIndicator(
+        //                   bubbleAlignment: widget.bubbleRtlAlignment,
+        //                   options: widget.typingIndicatorOptions!,
+        //                   showIndicator: (widget.typingIndicatorOptions!
+        //                           .typingUsers.isNotEmpty &&
+        //                       !_indicatorOnScrollStatus),
+        //                 )
+        //             : const SizedBox.shrink(),
+        //       ),
+        //     ),
+        //     SliverPadding(
+        //       padding: const EdgeInsets.only(bottom: 4),
+        //       // sliver: SliverAnimatedList(
+        //       //   findChildIndexCallback: (Key key) {
+        //       //     if (key is ValueKey<Object>) {
+        //       //       final newIndex = widget.items.indexWhere(
+        //       //         (v) => _valueKeyForItem(v) == key,
+        //       //       );
+        //       //       if (newIndex != -1) {
+        //       //         return newIndex;
+        //       //       }
+        //       //     }
+        //       //     return null;
+        //       //   },
+        //       //   initialItemCount: widget.items.length,
+        //       //   key: _listKey,
+        //       //   itemBuilder: (_, index, animation) =>
+        //       //       _newMessageBuilder(index, animation),
+        //       // ),
+        //       sliver: SliverToBoxAdapter(
+        //         child:,
+        //       ),
+        //     ),
+        //     SliverPadding(
+        //       padding: EdgeInsets.only(
+        //         top: 16 +
+        //             (widget.useTopSafeAreaInset
+        //                 ? MediaQuery.of(context).padding.top
+        //                 : 0),
+        //       ),
+        //       sliver: SliverToBoxAdapter(
+        //         child: SizeTransition(
+        //           axisAlignment: 1,
+        //           sizeFactor: _animation,
+        //           child: Center(
+        //             child: Container(
+        //               alignment: Alignment.center,
+        //               height: 32,
+        //               width: 32,
+        //               child: SizedBox(
+        //                 height: 16,
+        //                 width: 16,
+        //                 child: _isNextPageLoading
+        //                     ? CircularProgressIndicator(
+        //                         backgroundColor: Colors.transparent,
+        //                         strokeWidth: 1.5,
+        //                         valueColor: AlwaysStoppedAnimation<Color>(
+        //                           InheritedChatTheme.of(context)
+        //                               .theme
+        //                               .primaryColor,
+        //                         ),
+        //                       )
+        //                     : null,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       );
 }
