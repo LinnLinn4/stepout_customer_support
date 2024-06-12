@@ -168,11 +168,11 @@ class _CartPageState extends State<CartPage> {
                     const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8),
                 width: 80,
                 height: 80,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(14)),
                   // color: Color(0xFF2F2F87).shade200,
                   image: DecorationImage(
-                    image: AssetImage("assets/nike.png"),
+                    image: AssetImage(p.image),
                     fit: BoxFit.fitWidth,
                   ),
                 ),

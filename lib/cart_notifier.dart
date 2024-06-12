@@ -13,6 +13,7 @@ class Product {
   final String name;
   final String description;
   final double price;
+  final String image;
   int quantity;
 
   Product({
@@ -20,6 +21,7 @@ class Product {
     required this.name,
     required this.price,
     required this.description,
+    required this.image,
     this.quantity = 1, // Default quantity is 1
   });
 

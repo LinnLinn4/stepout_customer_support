@@ -137,7 +137,9 @@ class _ChatPageState extends State<ChatPage> {
                         id: "autoscroll",
                       )
                   ],
-                  customMessageBuilder: customMessageBuilder,
+                  customMessageBuilder: (p0, {required messageWidth}) =>
+                      customMessageBuilder(p0, chatViewModel,
+                          messageWidth: messageWidth),
                   avatarBuilder: (author) {
                     if (author.id == "system") {
                       return const SizedBox();
@@ -367,7 +369,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget customMessageBuilder(types.CustomMessage message,
+  Widget customMessageBuilder(types.CustomMessage message, ChatViewModel model,
       {required int messageWidth}) {
     if (message.id == "autoscroll") {
       return AutoScrollTag(
@@ -427,6 +429,10 @@ class _ChatPageState extends State<ChatPage> {
       );
     }
     if (message.id.contains("product-cart")) {
+      final product = model.productsList.firstWhere(
+        (element) => element.name == message.id.split('-').last,
+        orElse: () => model.productsList.first,
+      );
       return Container(
         color: Colors.white,
         padding: const EdgeInsets.all(15),
@@ -444,27 +450,34 @@ class _ChatPageState extends State<ChatPage> {
             Row(
               children: [
                 Image.asset(
-                  "assets/nike.png",
+                  product.image,
                   width: 100,
                   height: 100,
                 ),
-                Column(
-                  children: [
-                    Text(
-                      "Nike Dunk Low",
-                      style: GoogleFonts.mulish(
-                        color: AppColors.textColor,
-                        fontSize: 15,
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: GoogleFonts.mulish(
+                          color: AppColors.textColor,
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Text(
-                      "฿ 5,000.00",
-                      style: GoogleFonts.mulish(
-                        color: AppColors.textColor,
-                        fontSize: 15,
+                      Text(
+                        "฿ ${product.price}",
+                        style: GoogleFonts.mulish(
+                          color: AppColors.textColor,
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -475,14 +488,11 @@ class _ChatPageState extends State<ChatPage> {
               widthFactor: 1,
               child: InkWell(
                 onTap: () {
-                  if (context.read<CartNotifier>().products.isEmpty) {
+                  if (context.read<CartNotifier>().products.indexWhere(
+                          (element) => element.name == product.name) ==
+                      -1) {
                     Fluttertoast.showToast(msg: "Added to cart");
-                    context.read<CartNotifier>().addProduct(Product(
-                        id: 1,
-                        name: "Nike Dunk Low",
-                        price: 5000,
-                        description:
-                            "An '80s basketball icon made for hardwood courts."));
+                    context.read<CartNotifier>().addProduct(product);
                   }
                 },
                 child: Container(
@@ -495,7 +505,9 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   child: Center(
                     child: Text(
-                      context.watch<CartNotifier>().products.isNotEmpty
+                      context.watch<CartNotifier>().products.indexWhere(
+                                  (element) => element.name == product.name) !=
+                              -1
                           ? "Added to Cart"
                           : "Add to Cart",
                       style: GoogleFonts.mulish(

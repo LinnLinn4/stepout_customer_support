@@ -38,28 +38,36 @@ class ChatViewModel extends ChangeNotifier {
   bool initializing = true;
   final List<Product> productsList = [
     Product(
-        id: 1,
-        name: "Nike Dunk Low",
-        price: 5000,
-        description: "An '80s basketball icon made for hardwood courts."),
+      id: 1,
+      name: "Nike Dunk Low",
+      price: 5000,
+      description: "An '80s basketball icon made for hardwood courts.",
+      image: "assets/nike.png",
+    ),
     Product(
-        id: 2,
-        name: "Nike Calm",
-        price: 2000,
-        description:
-            "Enjoy a calm and comfortable experience wherever you go on holiday."),
+      id: 2,
+      name: "Nike Calm",
+      price: 2000,
+      description:
+          "Enjoy a calm and comfortable experience wherever you go on holiday.",
+      image: "assets/calm.png",
+    ),
     Product(
-        id: 3,
-        name: "Nike Court Vision Low Next Nature",
-        price: 3000,
-        description:
-            "If you love the classic look of '80s basketball, this shoe is perfect."),
+      id: 3,
+      name: "Nike Court Vision Low Next Nature",
+      price: 3000,
+      description:
+          "If you love the classic look of '80s basketball, this shoe is perfect.",
+      image: "assets/court.png",
+    ),
     Product(
-        id: 4,
-        name: "Nike Air Force 1 '07",
-        price: 5200,
-        description:
-            "Comfortable, durable and timeless - that's why they're the #1 go-to item."),
+      id: 4,
+      name: "Nike Air Force 1 '07",
+      price: 5200,
+      description:
+          "Comfortable, durable and timeless - that's why they're the #1 go-to item.",
+      image: "assets/force.png",
+    ),
   ];
   void init(BuildContext context) async {
     try {
@@ -223,12 +231,16 @@ class ChatViewModel extends ChangeNotifier {
           author: const types.User(id: "assistant"),
           id: response.index.toString(),
         ));
-        if (text.contains("Nike Dunk")) {
-          addMessage(types.CustomMessage(
-            author: const types.User(id: "assistant"),
-            id: "product-cart-${response.index}",
-          ));
+        for (var element in productsList) {
+          if (text.toLowerCase().contains(
+              element.name.split(' ').sublist(0, 1).join(' ').toLowerCase())) {
+            addMessage(types.CustomMessage(
+              author: const types.User(id: "assistant"),
+              id: "product-cart-${response.index}-${element.name}",
+            ));
+          }
         }
+
         if (text.toLowerCase().contains("trade")) {
           addMessage(types.CustomMessage(
             author: const types.User(id: "assistant"),
