@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, constant_identifier_names, use_build_context_synchronously
 import 'dart:developer' as dev;
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:stepout_customer_support/service/audio_player_service.dart';
 import 'package:stepout_customer_support/service/network_api_service.dart';
 import 'package:stepout_customer_support/service/speech_to_text_service.dart';
@@ -9,8 +10,9 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:http/http.dart' as http;
 import 'package:record/record.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
+// import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:stepout_customer_support/cart_notifier.dart';
+import 'package:stepout_customer_support/utility/constants.dart';
 
 enum SystemMessageTypes {
   doctor_info,
@@ -33,7 +35,9 @@ class ChatViewModel extends ChangeNotifier {
   bool isRecording = false;
   bool isAIProcessing = false;
   bool isAISpeaking = false;
-  final gemini = Gemini.instance;
+  // final gemini = Gemini.instance;
+  late OpenAI openAI;
+
   final List<types.Message> messagesList = [];
   bool initializing = true;
   final List<Product> productsList = [
@@ -75,6 +79,11 @@ class ChatViewModel extends ChangeNotifier {
       path = "";
       speechToText = SpeechToText();
       await _audioPlayerService.initAudioPlayer(1);
+      openAI = OpenAI.instance.build(
+        token: openAIToken,
+        baseOption: HttpSetup(),
+        enableLog: false,
+      );
       initializing = false;
       notifyListeners();
     } catch (e) {
@@ -189,54 +198,87 @@ class ChatViewModel extends ChangeNotifier {
     isAIProcessing = true;
     notifyListeners();
     try {
-      final response = await gemini.chat([
-        Content(parts: [
-          Parts(text:
-              //Include other products when we have time, connect with parent app, and update prompt
-              """Act as a customer support for StepOut company. You sell nike shoes.
-                   Your name is Brian.
+      final request = ChatCompleteText(
+        messages: [
+          Messages(role: Role.system, content: """
+                    Act as a customer support for StepOut company. You sell nike shoes.
+                    Your name is Brian.
                     We have the following products ${productsList.map((e) => "${e.name} which is ${e.price} Baht, ")} and
-                    Do not recommend the products which are not included in our product list. 
+                    Do not recommend the products which are not included in our product list.
                     Try to recommend our shoes according to the customers' requirements if provided.
                     We have trade-in program. Customers can check the estimated credits they can get on our trade-in page.
                     If they ask for trade-in program, you can say click to below button to go to trade-in page.
                     If they ask for the store's address, here is the address "330/1 Soi Latphrao 132 Latphrao Road Klongchan, Bangkapi, Bangkok, 10240, Thailand, Phone number:  +66623744119".
-                    Never Include additional information except for the information asked""")
-        ], role: 'user'),
-        Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
-        Content(parts: [
-          Parts(
-              text:
-                  """If they asked about warranty and after-sales support, you can answer like this.
-          Nike offers a two-year warranty on all of its shoes. This warranty covers any defects in materials or workmanship. 
-          If you have any problems with your shoes within the first year, you can contact us to return the item.
-          We also offer a variety of after-sales support services, including: Free shipping on all orders over 5,000 Baht 
-          A 60-day return policy and A dedicated customer service team that is available to answer any questions you may have""")
-        ], role: 'user'),
-        Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
-        ...messagesList.whereType<types.TextMessage>().map((e) {
-          return Content(
-              role: e.author.id == "user" ? 'user' : 'model',
-              parts: [
-                Parts(text: e.text),
-              ]);
-        })
-      ]);
+                    Never Include additional information except for the information asked
+                    If they asked about warranty and after-sales support, you can answer like this.
+                    Nike offers a two-year warranty on all of its shoes. This warranty covers any defects in materials or workmanship.
+                    If you have any problems with your shoes within the first year, you can contact us to return the item.
+                    We also offer a variety of after-sales support services, including: Free shipping on all orders over 5,000 Baht
+                    A 60-day return policy and A dedicated customer service team that is available to answer any questions you may have
+                    """),
+          ...messagesList.map((e) {
+            if (e is types.TextMessage) {
+              return Messages(
+                role: e.author.id == "user" ? Role.user : Role.assistant,
+                content: e.text,
+              );
+            }
+            return Messages(role: Role.system, content: e.id);
+          })
+        ],
+        maxToken: 1024,
+        model: GptTurbo0301ChatModel(),
+      );
+      final response = await openAI.onChatCompletion(request: request);
+      // final response = await gemini.chat([
+      //   Content(parts: [
+      //     Parts(text:
+      //         //Include other products when we have time, connect with parent app, and update prompt
+      //         """Act as a customer support for StepOut company. You sell nike shoes.
+      //              Your name is Brian.
+      //               We have the following products ${productsList.map((e) => "${e.name} which is ${e.price} Baht, ")} and
+      //               Do not recommend the products which are not included in our product list.
+      //               Try to recommend our shoes according to the customers' requirements if provided.
+      //               We have trade-in program. Customers can check the estimated credits they can get on our trade-in page.
+      //               If they ask for trade-in program, you can say click to below button to go to trade-in page.
+      //               If they ask for the store's address, here is the address "330/1 Soi Latphrao 132 Latphrao Road Klongchan, Bangkapi, Bangkok, 10240, Thailand, Phone number:  +66623744119".
+      //               Never Include additional information except for the information asked""")
+      //   ], role: 'user'),
+      //   Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
+      //   Content(parts: [
+      //     Parts(
+      //         text:
+      //             """If they asked about warranty and after-sales support, you can answer like this.
+      //     Nike offers a two-year warranty on all of its shoes. This warranty covers any defects in materials or workmanship.
+      //     If you have any problems with your shoes within the first year, you can contact us to return the item.
+      //     We also offer a variety of after-sales support services, including: Free shipping on all orders over 5,000 Baht
+      //     A 60-day return policy and A dedicated customer service team that is available to answer any questions you may have""")
+      //   ], role: 'user'),
+      //   Content(parts: [Parts(text: 'Yes, I understand that.')], role: 'model'),
+      //   ...messagesList.whereType<types.TextMessage>().map((e) {
+      //     return Content(
+      //         role: e.author.id == "user" ? 'user' : 'model',
+      //         parts: [
+      //           Parts(text: e.text),
+      //         ]);
+      //   })
+      // ]);
       if (response != null) {
-        final messages = processAIResponseString(response.output.toString());
+        final messages =
+            processAIResponseString(response.choices.first.message!.content);
         String text = messages.first;
 
         addMessage(types.TextMessage(
           text: text,
           author: const types.User(id: "assistant"),
-          id: response.index.toString(),
+          id: response.conversionId.toString(),
         ));
         for (var element in productsList) {
           if (text.toLowerCase().contains(
               element.name.split(' ').sublist(0, 1).join(' ').toLowerCase())) {
             addMessage(types.CustomMessage(
               author: const types.User(id: "assistant"),
-              id: "product-cart-${response.index}-${element.name}",
+              id: "product-cart-${response.conversionId}-${element.name}",
             ));
           }
         }
@@ -244,7 +286,7 @@ class ChatViewModel extends ChangeNotifier {
         if (text.toLowerCase().contains("trade")) {
           addMessage(types.CustomMessage(
             author: const types.User(id: "assistant"),
-            id: "trade-${response.index}",
+            id: "trade-${response.conversionId}",
           ));
         }
         final audioData = await networkAPI.openAITTS(text);
@@ -263,7 +305,7 @@ class ChatViewModel extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      dev.log((e as GeminiException).message.toString());
+      // dev.log((e as GeminiException).message.toString());
       isAIProcessing = false;
       notifyListeners();
     }
