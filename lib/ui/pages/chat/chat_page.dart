@@ -131,11 +131,21 @@ class _ChatPageState extends State<ChatPage> {
                   scrollController: chatViewModel.scrollController,
                   messages: [
                     ...chatViewModel.messagesList,
+                    if (chatViewModel.isAIProcessing)
+                      const types.CustomMessage(
+                        author: types.User(id: "processing"),
+                        id: "processing",
+                      ),
+                    if (chatViewModel.gettingSST)
+                      const types.CustomMessage(
+                        author: types.User(id: "user"),
+                        id: "sst",
+                      ),
                     if (chatViewModel.messagesList.isNotEmpty)
                       const types.CustomMessage(
                         author: types.User(id: "autoscroll"),
                         id: "autoscroll",
-                      )
+                      ),
                   ],
                   customMessageBuilder: (p0, {required messageWidth}) =>
                       customMessageBuilder(p0, chatViewModel,
@@ -307,7 +317,7 @@ class _ChatPageState extends State<ChatPage> {
                   customBottomWidget: const SizedBox(),
                   theme: DefaultChatTheme(
                     backgroundColor: AppColors.whiteBackground,
-                    primaryColor: Colors.grey.shade300,
+                    primaryColor: Colors.white,
                     secondaryColor: const Color(0xFF2F2F87),
                     receivedMessageBodyTextStyle: GoogleFonts.mulish(
                       color: Colors.white,
@@ -377,6 +387,26 @@ class _ChatPageState extends State<ChatPage> {
         controller: chatViewModel.scrollController,
         index: 99999,
         child: const SizedBox(),
+      );
+    }
+    if (message.id == "processing") {
+      return Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(5),
+        child: Image.asset(
+          "assets/inputing.gif",
+          height: 40,
+        ),
+      );
+    }
+    if (message.id == "sst") {
+      return Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(5),
+        child: Image.asset(
+          "assets/inputing.gif",
+          height: 40,
+        ),
       );
     }
     if (message.id.contains("trade-")) {

@@ -50,6 +50,7 @@ dependencies:
   audioplayers: ^6.0.0
   flutter_gemini: ^2.0.3
   chat_gpt_sdk: 2.2.8
+  dio: ^5.7.0
 
 dev_dependencies:
   flutter_test:

@@ -24,7 +24,7 @@ void main() async {
           child: const Center(
             child: ClipRect(
               child: SizedBox(
-                width: 400,
+                // width: 400,
                 child: MyApp(),
               ),
             ),
